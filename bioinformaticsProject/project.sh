@@ -16,7 +16,7 @@ cat $2* > hspmuscle.fasta
 ~/Private/Biocomputing2022/Tools/hmmbuild hspbuild.txt hspalign.fasta
 
 # Create table header
-echo Proteome	mcrA	Hsp>finalTable.txt
+echo Proteome,mcrA,Hsp>finalTable.txt
 
 # Search each proteome for mcrA and hsp genes
 for file in proteomes/proteome*
@@ -30,11 +30,10 @@ nummcrAgenes=$(cat mcrAresult.txt | grep -vc "#")
 # Count number of hsp genes
 numHspGenes=$(cat hspresult.txt | grep -vc "#")
 # Add counts to table
-echo $protLabel	$nummcrAgenes	$numHspGenes>>finalTable.txt
+echo $protLabel,$nummcrAgenes,$numHspGenes>>finalTable.txt
 done
 
-# Limit table to proteomes containing 1 mcrA gene
+echo "pH Resistant Candidates in Descending Order:" > pHResistantCandidates.txt
+# Limit table to proteomes containing 1 mcrA gene, Sort table in descending order by number of hsp genes, Return proteomes to new text file
 
-# Sort table in descending order by number of hsp genes
-
-# Return proteomes to new text file
+cat finalTable.txt | grep -v ",0," | sort -r -t , -k 3 | grep -v ",0" | cut -d, -f 1 >> pHResistantCandidates.txt
